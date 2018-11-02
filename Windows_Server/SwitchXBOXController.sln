@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwitchXBOXController", "SwitchXBOXController\SwitchXBOXController.csproj", "{D7A32DEF-897E-43F6-9068-68797E5442EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7A32DEF-897E-43F6-9068-68797E5442EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A32DEF-897E-43F6-9068-68797E5442EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A32DEF-897E-43F6-9068-68797E5442EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A32DEF-897E-43F6-9068-68797E5442EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00C8E2EB-0C3F-438C-ACF8-F069114587C9}
+	EndGlobalSection
+EndGlobal

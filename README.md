@@ -1,6 +1,8 @@
 # SwitchXBOXController
 Turn your Nintendo Switch into an XBOX360 controller to play on your Windows computer
 
+![Server](https://puu.sh/BVASI/d8c6c00ecc.png)
+
 ## How to use
 - Download the latest [ScpDriverInterface](https://github.com/mogzol/ScpDriverInterface) release and use the `ScpDriverInstaller.exe` in there to install the Scp drivers.
 - Download the latest SwitchXBOXController release and execute `SwitchXBOXController_Server.exe`. You might have to allow network access in the firewall settings.

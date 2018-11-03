@@ -1,0 +1,9 @@
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Release\SwitchXBOXController.csprojAssemblyReference.cache
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Release\SwitchXBOXController.csproj.CoreCompileInputs.cache
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\bin\Release\SwitchXBOXController.exe.config
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\bin\Release\SwitchXBOXController.exe
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\bin\Release\SwitchXBOXController.pdb
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Release\SwitchXBOXController.csproj.CopyComplete
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Release\SwitchXBOXController.exe
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Release\SwitchXBOXController.pdb
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\bin\Release\ScpDriverInterface.dll

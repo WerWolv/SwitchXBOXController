@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,15 @@ namespace SwitchXBOXController
         private static X360Controller controller;
 
         private static Thread networkThread;
+        private static Thread displayThread;
         private static UdpClient udpSocket;
+
+        static bool running = true;
+
+        [DllImport("Kernel32")]
+        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+        private delegate bool EventHandler();
+        static EventHandler _handler;
 
         public static void networking()
         {
@@ -25,6 +34,8 @@ namespace SwitchXBOXController
             udpSocket = new UdpClient(ipep);
 
             var sender = new IPEndPoint(IPAddress.Any, 0);
+
+            Console.WriteLine();
 
             while (true)
             {
@@ -62,13 +73,53 @@ namespace SwitchXBOXController
                         controller.RightStickX = (short)((data[1] << 8) | data[2]);
                         controller.RightStickY = (short)((data[3] << 8) | data[4]);
                     }
-
                 }
                 catch (SocketException e)
                 {
                     break;
                 }
             }
+        }
+
+        static void displayButtons()
+        {
+            while(running)
+            {
+                for (int i = 0; i < 150; i++)
+                    Console.Write("\r");
+                Console.Write("|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|{10}|{11}|{12}|{13}|{14}|{15}|{16}|{17}|{18}|{19}|",
+                    (controller.Buttons & X360Buttons.A) > 0                ? "A"           : " ",
+                    (controller.Buttons & X360Buttons.B) > 0                ? "B"           : " ",
+                    (controller.Buttons & X360Buttons.X) > 0                ? "X"           : " ",
+                    (controller.Buttons & X360Buttons.Y) > 0                ? "Y"           : " ",
+                    (controller.Buttons & X360Buttons.LeftBumper) > 0       ? "L"           : " ",
+                    (controller.Buttons & X360Buttons.RightBumper) > 0      ? "R"           : " ",
+                    (controller.LeftTrigger > 0)                            ? "ZL"          : "  ",
+                    (controller.RightTrigger > 0)                           ? "ZR"          : "  ",
+                    (controller.Buttons & X360Buttons.Up) > 0               ? "UP"          : "  ",
+                    (controller.Buttons & X360Buttons.Down) > 0             ? "DOWN"        : "    ",
+                    (controller.Buttons & X360Buttons.Left) > 0             ? "LEFT"        : "    ",
+                    (controller.Buttons & X360Buttons.Right) > 0            ? "RIGHT"       : "     ",
+                    (controller.Buttons & X360Buttons.LeftStick) > 0        ? "LSTICK"      : "      ",
+                    (controller.Buttons & X360Buttons.RightStick) > 0       ? "RSTICK"      : "      ",
+                    (controller.Buttons & X360Buttons.Start) > 0            ? "START"       :  "     ",
+                    (controller.Buttons & X360Buttons.Back) > 0             ? "BACK"        : "    ",
+                    "LX " + string.Format("{0:+0.000;-#0.000}", controller.LeftStickX / 32768.0F),
+                    "LY " + string.Format("{0:+0.000;-#0.000}", controller.LeftStickY / 32768.0F),
+                    "RX " + string.Format("{0:+0.000;-#0.000}", controller.RightStickX / 32768.0F),
+                    "RY " + string.Format("{0:+0.000;-#0.000}", controller.RightStickY / 32768.0F));
+            }
+        }
+
+        private static bool onExitHandler()
+        {
+            running = false;
+            scpBus.Unplug(1);
+            udpSocket.Close();
+            networkThread.Join();
+            displayThread.Join();
+
+            return false;
         }
 
         static void Main(string[] args)
@@ -80,11 +131,12 @@ namespace SwitchXBOXController
 
             System.Timers.Timer timer;
 
-            bool running = true;
+            _handler += new EventHandler(onExitHandler);
+            SetConsoleCtrlHandler(_handler, true);
 
             detectSwitch();
 
-            Console.WriteLine("Running... Please type \"quit\" to close the program.");
+            Console.WriteLine("Running...");
 
             controller = new X360Controller();
             scpBus = new ScpBus();
@@ -96,15 +148,12 @@ namespace SwitchXBOXController
             timer.Start();
 
             networkThread = new Thread(() => networking());
+            displayThread = new Thread(() => displayButtons());
 
             networkThread.Start();
+            displayThread.Start();
 
-            while (Console.ReadLine() != "quit") ;
-
-            running = false;
-            scpBus.Unplug(1);
-            udpSocket.Close();
-            networkThread.Join();
+            Console.ReadLine();
         }
 
         private static void detectSwitch()

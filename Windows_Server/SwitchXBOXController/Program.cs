@@ -77,11 +77,14 @@ namespace SwitchXBOXController
             Console.WriteLine("| Switch XBOX Controller Server |");
             Console.WriteLine("|-------------------------------|");
             Console.WriteLine();
-            Console.WriteLine("Running... Please type \"quit\" to close the program.");
 
             System.Timers.Timer timer;
 
             bool running = true;
+
+            detectSwitch();
+
+            Console.WriteLine("Running... Please type \"quit\" to close the program.");
 
             controller = new X360Controller();
             scpBus = new ScpBus();
@@ -103,5 +106,43 @@ namespace SwitchXBOXController
             udpSocket.Close();
             networkThread.Join();
         }
+
+        private static void detectSwitch()
+        {
+            byte[] buffer = new byte[1024];
+            var epLocal = new IPEndPoint(IPAddress.Any, 8192);
+            EndPoint epRemote = new IPEndPoint(IPAddress.Any, 0);
+            var sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            sock.EnableBroadcast = true;   //new code
+            sock.Bind(epLocal);
+
+            while (true)
+            {
+                sock.ReceiveFrom(buffer, ref epRemote);
+                if (Encoding.ASCII.GetString(buffer).Trim().Contains("xbox_switch"))
+                {
+                    sock.SendTo(Encoding.ASCII.GetBytes("xbox\0"), (IPEndPoint)epRemote);
+                    Console.WriteLine($"Connected to: { ((IPEndPoint)epRemote).Address }");
+                    break;
+                }
+            }
+
+            sock.Close();
+        }
+
+        private static IPAddress LocalIPAddress()
+        {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                return null;
+            }
+
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+
+            return host
+                .AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+        }
+
     }
 }

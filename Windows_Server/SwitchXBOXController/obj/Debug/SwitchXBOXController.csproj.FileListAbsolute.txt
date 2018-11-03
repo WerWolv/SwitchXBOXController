@@ -1,0 +1,9 @@
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\bin\Debug\SwitchXBOXController.exe.config
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\bin\Debug\SwitchXBOXController.exe
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\bin\Debug\SwitchXBOXController.pdb
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\bin\Debug\ScpDriverInterface.dll
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\obj\Debug\SwitchXBOXController.csproj.CoreCompileInputs.cache
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\obj\Debug\SwitchXBOXController.csproj.CopyComplete
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\obj\Debug\SwitchXBOXController.exe
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\obj\Debug\SwitchXBOXController.pdb
+C:\Users\werwo\source\repos\SwitchXBOXController\SwitchXBOXController\obj\Debug\SwitchXBOXController.csprojAssemblyReference.cache

@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #define PORT 8192
-
+#define CPU_CLOCK 333000000 //333 MHz should be a BIG improvement in battery life if the console is used in handheld mode
 char ipAddress[16];
 u8 data[5];
 JoystickPosition joystickLeft, joystickRight;
@@ -71,6 +71,10 @@ int broadcast(int sck, char * host, char * port) {
 }
 
 int main(int argc, char* argv[]) {
+    u8 ipBlock3 = 0;
+    u8 ipBlock4 = 0;
+    u8 currentIpBlock = 0;    
+
     socketInitializeDefault();
     consoleInit(NULL);
 
@@ -78,6 +82,40 @@ int main(int argc, char* argv[]) {
     printf("| Switch XBOX Controller |\n");
     printf("|------------------------|\n\n");
 
+    printf("Please set the ip address of the computer you would like to connect with.\n");
+    printf("Switch between the third and fouth block the the address with DPAD left/right.\n");
+    printf("Increase and decrease the value of the current block with DPAD up/down.\n");
+    printf("Once you set the ip address press (+) to connect to the computer.\n\n");
+
+	consoleUpdate(NULL);
+	pcvSetClockRate(PcvModule_Cpu, CPU_CLOCK);
+
+    while (1)
+    {
+        hidScanInput();
+        u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+
+		printf("\x1b[11;1HComputers ip address: 192.168.");
+
+		if (currentIpBlock == 0) printf("\x1b[11;31H[%d].%d           ", ipBlock3, ipBlock4);
+		if (currentIpBlock == 1) printf("\x1b[11;31H%d.[%d]        ", ipBlock3, ipBlock4);
+
+
+		if (kDown & KEY_DUP && currentIpBlock == 0) ipBlock3++;
+		if (kDown & KEY_DDOWN && currentIpBlock == 0) ipBlock3--;
+		if (kDown & KEY_DUP && currentIpBlock == 1) ipBlock4++;
+		if (kDown & KEY_DDOWN && currentIpBlock == 1) ipBlock4--;
+
+        if (kDown & KEY_DLEFT && currentIpBlock == 1) currentIpBlock = 0;
+        if (kDown & KEY_DRIGHT && currentIpBlock == 0) currentIpBlock = 1;
+
+        if (kDown & KEY_PLUS) break;
+
+		consoleUpdate(NULL);
+    }
+    
+    char computersIp[16];
+    sprintf(computersIp, "192.168.%d.%d", ipBlock3, ipBlock4);
 
     struct sockaddr_in si_other;
     int s, slen=sizeof(si_other);
@@ -86,7 +124,7 @@ int main(int argc, char* argv[]) {
         printf("Socket creation failed: %d\n", s);
     }
 
-    broadcast(s, "192.168.1.255", "8192");
+    broadcast(s, computersIp, "8192");
 
     printf("Connected to: %s\n", ipAddress);
 

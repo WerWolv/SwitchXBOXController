@@ -11,7 +11,8 @@
 #include <unistd.h>
 
 #define PORT 8192
-#define CPU_CLOCK 333000000 //333 MHz should be a BIG improvement in battery life if the console is used in handheld mode
+//				  250000000
+#define CPU_CLOCK 250000000 //250 MHz should be a BIG improvement in battery life if the console is used in handheld mode
 char ipAddress[16];
 u8 data[5];
 JoystickPosition joystickLeft, joystickRight;
@@ -90,17 +91,20 @@ int main(int argc, char* argv[]) {
     printf("Once you set the ip address press (+) to connect to the computer.\n\n");
 
 	consoleUpdate(NULL);
-	pcvSetClockRate(PcvModule_Cpu, CPU_CLOCK);
+
+	pcvSetClockRate(PcvModule_Cpu, CPU_CLOCK); //Underclock the CPU
+	appletSetScreenShotPermission(0); //Disable the screenshot function because it is not needed for the program
+	appletBeginBlockingHomeButton(0); //Block the Home Button to prevent acidental use. Mainly useful for the pro controller since (+) and Home are close together.
 
     while (1)
     {
         hidScanInput();
         u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
 
-		if (currentIpBlock == 0) printf("\x1b[11;1HCurrent IP Adress: [%d].%d.%d.%d\t\t", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
-		if (currentIpBlock == 1) printf("\x1b[11;1HCurrent IP Adress: %d.[%d].%d.%d\t\t", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
-		if (currentIpBlock == 2) printf("\x1b[11;1HCurrent IP Adress: %d.%d.[%d].%d\t\t", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
-		if (currentIpBlock == 3) printf("\x1b[11;1HCurrent IP Adress: %d.%d.%d.[%d]\t\t", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
+		if (currentIpBlock == 0) printf("\x1b[11;1HCurrent IP Adress: [%d].%d.%d.%d\t\t\n", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
+		if (currentIpBlock == 1) printf("\x1b[11;1HCurrent IP Adress: %d.[%d].%d.%d\t\t\n", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
+		if (currentIpBlock == 2) printf("\x1b[11;1HCurrent IP Adress: %d.%d.[%d].%d\t\t\n", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
+		if (currentIpBlock == 3) printf("\x1b[11;1HCurrent IP Adress: %d.%d.%d.[%d]\t\t\n", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
 
 		//Handle inputs
 		if (kDown & KEY_DUP && currentIpBlock == 0) ipBlock1++;

@@ -85,14 +85,15 @@ int main(int argc, char* argv[]) {
     printf("| Switch XBOX Controller |\n");
     printf("|------------------------|\n\n");
 
-    printf("Please set up the IP where the UDP broadcast should be send to!\n.");
-    printf("Usually this address is 192.168.X.255 where X is the 3. block of your local IP\n");
-	printf("If UDP broadcasting does not work for you, use the IP of your computer instead.\n");
+    printf("Please set up the ip you would like to send the UDP broadcast too\n.");
+    printf("Usally this address is 192.168.X.255 where X is the 3rd block of your local IP.\n");
+    printf("If UDP broadcasting does not work for you, use the IP of your computer instead.\n");
 
 	consoleUpdate(NULL);
 
 	pcvSetClockRate(PcvModule_Cpu, CPU_CLOCK); //Underclock the CPU
 	appletSetScreenShotPermission(0); //Disable the screenshot function because it is not needed for the program
+	appletBeginBlockingHomeButton(0); //Block the Home Button to prevent acidental use. Mainly useful for the pro controller since (+) and Home are close together.
 
     while (1)
     {
@@ -193,13 +194,6 @@ int main(int argc, char* argv[]) {
         //Touchscreen touch (XBOX Button)
         if (kHeld & KEY_TOUCH) sendto(s, "\xB\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\xB\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
-
-		/* Pro Controller work around */
-		if (kHeld & KEY_R)
-		{
-			if (kHeld & KEY_LSTICK) sendto(s, "\xB\x1", 2, 0, (struct sockaddr *) &si_other, slen);
-			else sendto(s, "\xB\x0", 2, 0, (struct sockaddr *) &si_other, slen);
-		}
 
         //A button
         if (kHeld & KEY_A) sendto(s, "\xC\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);

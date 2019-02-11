@@ -11,8 +11,8 @@
 #include <unistd.h>
 
 #define PORT 8192
-//				  250000000
 #define CPU_CLOCK 250000000 //250 MHz should be a BIG improvement in battery life if the console is used in handheld mode
+
 char ipAddress[16];
 u8 data[5];
 JoystickPosition joystickLeft, joystickRight;
@@ -85,16 +85,14 @@ int main(int argc, char* argv[]) {
     printf("| Switch XBOX Controller |\n");
     printf("|------------------------|\n\n");
 
-    printf("Please set the ip address of the computer you would like to connect with.\n");
-    printf("Switch between the 1st, 2nd, 3rd or 4th block in the ip with DPAD left/right.\n");
-    printf("Increase and decrease the value of the current block with DPAD up/down.\n");
-    printf("Once you set the ip address press (+) to connect to the computer.\n\n");
+    printf("Please set up the IP where the UDP broadcast should be send to!\n.");
+    printf("Usually this address is 192.168.X.255 where X is the 3. block of your local IP\n");
+	printf("If UDP broadcasting does not work for you, use the IP of your computer instead.\n");
 
 	consoleUpdate(NULL);
 
 	pcvSetClockRate(PcvModule_Cpu, CPU_CLOCK); //Underclock the CPU
 	appletSetScreenShotPermission(0); //Disable the screenshot function because it is not needed for the program
-	appletBeginBlockingHomeButton(0); //Block the Home Button to prevent acidental use. Mainly useful for the pro controller since (+) and Home are close together.
 
     while (1)
     {
@@ -149,41 +147,81 @@ int main(int argc, char* argv[]) {
     while (appletMainLoop()) {
         hidScanInput();
         u64 kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
+
         hidJoystickRead(&joystickLeft, CONTROLLER_P1_AUTO, JOYSTICK_LEFT);
         hidJoystickRead(&joystickRight, CONTROLLER_P1_AUTO, JOYSTICK_RIGHT);
 
+        //DPAD Up
         if (kHeld & KEY_DUP) sendto(s, "\x1\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x1\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //DPAD Down
         if (kHeld & KEY_DDOWN) sendto(s, "\x2\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x2\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //DPAD Left
         if (kHeld & KEY_DLEFT) sendto(s, "\x3\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x3\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //DPAD Right
         if (kHeld & KEY_DRIGHT) sendto(s, "\x4\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
-        else sendto(s, "\x4\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+            else sendto(s, "\x4\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+        //Minus button
         if (kHeld & KEY_MINUS) sendto(s, "\x5\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x5\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //Plus button
         if (kHeld & KEY_PLUS) sendto(s, "\x6\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x6\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //Left stick click
         if (kHeld & KEY_LSTICK) sendto(s, "\x7\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x7\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+        
+        //Right stick click
         if (kHeld & KEY_RSTICK) sendto(s, "\x8\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x8\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //L Shoulder
         if (kHeld & KEY_L) sendto(s, "\x9\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x9\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //R Shoulder
         if (kHeld & KEY_R) sendto(s, "\xA\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\xA\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+        
+        //Touchscreen touch (XBOX Button)
         if (kHeld & KEY_TOUCH) sendto(s, "\xB\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\xB\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+		/* Pro Controller work around */
+		if (kHeld & KEY_R)
+		{
+			if (kHeld & KEY_LSTICK) sendto(s, "\xB\x1", 2, 0, (struct sockaddr *) &si_other, slen);
+			else sendto(s, "\xB\x0", 2, 0, (struct sockaddr *) &si_other, slen);
+		}
+
+        //A button
         if (kHeld & KEY_A) sendto(s, "\xC\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\xC\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //B button
         if (kHeld & KEY_B) sendto(s, "\xD\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\xD\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //X button
         if (kHeld & KEY_X) sendto(s, "\xE\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\xE\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //Y Button
         if (kHeld & KEY_Y) sendto(s, "\xF\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\xF\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //ZL Trigger
         if (kHeld & KEY_ZL) sendto(s, "\x10\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x10\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
+
+        //ZR Trigger
         if (kHeld & KEY_ZR) sendto(s, "\x11\x1", 2 , 0 , (struct sockaddr *) &si_other, slen);
         else sendto(s, "\x11\x0", 2 , 0 , (struct sockaddr *) &si_other, slen);
 

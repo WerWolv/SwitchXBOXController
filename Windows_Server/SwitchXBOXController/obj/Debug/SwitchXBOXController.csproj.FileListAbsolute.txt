@@ -6,3 +6,4 @@ D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXControll
 D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Debug\SwitchXBOXController.csproj.CopyComplete
 D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Debug\SwitchXBOXController.exe
 D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Debug\SwitchXBOXController.pdb
+D:\Development\SwitchHomebrew\SwitchController\Windows_Server\SwitchXBOXController\obj\Debug\SwitchXBOXController.csprojAssemblyReference.cache

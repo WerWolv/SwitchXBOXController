@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #define PORT 8192
-#define CPU_CLOCK 250000000 //250 MHz should be a BIG improvement in battery life if the console is used in handheld mode
+#define CPU_CLOCK 50E6 //50 MHz should be a BIG improvement in battery life if the console is used in handheld mode
 
 char ipAddress[16];
 u8 data[5];
@@ -85,13 +85,25 @@ int main(int argc, char* argv[]) {
     printf("| Switch XBOX Controller |\n");
     printf("|------------------------|\n\n");
 
-    printf("Please set up the IP where the UDP broadcast should be send to!\n.");
-    printf("Usually this address is 192.168.X.255 where X is the 3. block of your local IP\n");
+    printf("Please set up the IP where the UDP broadcast should be send to!\n");
+    printf("Usually this address is 192.168.X.255 where X is the 3. block of your local IP.\n");
 	printf("If UDP broadcasting does not work for you, use the IP of your computer instead.\n");
+	printf("Use the DPAD to enter the IP address bellow and press the A button to connect.\n");
 
 	consoleUpdate(NULL);
-
-	pcvSetClockRate(PcvModule_Cpu, CPU_CLOCK); //Underclock the CPU
+	
+  //Underclock the CPU
+  if (hosversionBefore(8, 0, 0)) {
+    pcvInitialize();
+	pcvSetClockRate(PcvModule_CpuBus, CPU_CLOCK); 
+  }
+  else {
+    ClkrstSession clkrstSession;
+    clkrstInitialize();
+    clkrstOpenSession(&clkrstSession, PcvModuleId_CpuBus, 3);
+    clkrstSetClockRate(&clkrstSession, CPU_CLOCK);
+	clkrstCloseSession(&clkrstSession);
+  }
 	appletSetScreenShotPermission(0); //Disable the screenshot function because it is not needed for the program
 
     while (1)
@@ -117,9 +129,11 @@ int main(int argc, char* argv[]) {
 		if (kDown & KEY_DRIGHT && currentIpBlock < 4) currentIpBlock++;
 		if (kDown & KEY_DLEFT && currentIpBlock >= 1) currentIpBlock--;
 
-        if (kDown & KEY_PLUS) break;
+        if (kDown & KEY_A) break;
 
 		consoleUpdate(NULL);
+
+		svcSleepThread(10E6);
     }
     
     char computersIp[16];
@@ -244,5 +258,10 @@ int main(int argc, char* argv[]) {
 
     consoleExit(NULL);
 
-    return 0;
+	if (hosversionBefore(7, 0, 0))
+		pcvExit();
+	else
+		clkrstExit();
+
+	return 0;
 }

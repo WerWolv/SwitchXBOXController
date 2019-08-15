@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
     printf("Usually this address is 192.168.X.255 where X is the 3. block of your local IP.\n");
 	printf("If UDP broadcasting does not work for you, use the IP of your computer instead.\n");
 	printf("Use the DPAD to enter the IP address bellow and press the A button to connect.\n");
-	printf("ZL/ZR can be used to increment/decrement the IP by 10.\n");
+	printf("ZL/ZR can be used to decrement/increment the IP by 10.\n");
 
 	consoleUpdate(NULL);
 	

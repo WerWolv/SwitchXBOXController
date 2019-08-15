@@ -89,6 +89,7 @@ int main(int argc, char* argv[]) {
     printf("Usually this address is 192.168.X.255 where X is the 3. block of your local IP.\n");
 	printf("If UDP broadcasting does not work for you, use the IP of your computer instead.\n");
 	printf("Use the DPAD to enter the IP address bellow and press the A button to connect.\n");
+	printf("ZL/ZR can be used to increment/decrement the IP by 10.\n");
 
 	consoleUpdate(NULL);
 	
@@ -125,6 +126,15 @@ int main(int argc, char* argv[]) {
 		if (kDown & KEY_DDOWN && currentIpBlock == 2) ipBlock3--;
 		if (kDown & KEY_DUP && currentIpBlock == 3) ipBlock4++;
 		if (kDown & KEY_DDOWN && currentIpBlock == 3) ipBlock4--;
+
+	    	if (kDown & KEY_ZR && currentIpBlock == 0) ipBlock1+=10;
+		if (kDown & KEY_ZL && currentIpBlock == 0) ipBlock1-=10;
+		if (kDown & KEY_ZR && currentIpBlock == 1) ipBlock2+=10;
+		if (kDown & KEY_ZL && currentIpBlock == 1) ipBlock2-=10;
+		if (kDown & KEY_ZR && currentIpBlock == 2) ipBlock3+=10;
+		if (kDown & KEY_ZL && currentIpBlock == 2) ipBlock3-=10;
+		if (kDown & KEY_ZR && currentIpBlock == 3) ipBlock4+=10;
+		if (kDown & KEY_ZL && currentIpBlock == 3) ipBlock4-=10;
 
 		if (kDown & KEY_DRIGHT && currentIpBlock < 4) currentIpBlock++;
 		if (kDown & KEY_DLEFT && currentIpBlock >= 1) currentIpBlock--;

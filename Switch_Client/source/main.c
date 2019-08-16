@@ -121,8 +121,8 @@ int main(int argc, char* argv[]) {
 		if (kDown & KEY_ZR) ipBlocks[currentIpBlock]+=10;
 		if (kDown & KEY_ZL) ipBlocks[currentIpBlock]-=10;
 
-		if (kDown & KEY_DRIGHT && currentIpBlock < 4) currentIpBlock++;
-		if (kDown & KEY_DLEFT && currentIpBlock >= 1) currentIpBlock--;
+		if (kDown & KEY_DRIGHT && currentIpBlock < 3) currentIpBlock++;
+		if (kDown & KEY_DLEFT && currentIpBlock > 0) currentIpBlock--;
 
         if (kDown & KEY_A) break;
 

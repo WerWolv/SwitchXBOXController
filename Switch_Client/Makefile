@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 APP_TITLE := SwitchXBOXController
 APP_AUTHOR := WerWolv
-APP_VERSION := 1.0.0
+APP_VERSION := 1.3.0
 
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build

@@ -72,11 +72,8 @@ int broadcast(int sck, char * host, char * port) {
 }
 
 int main(int argc, char* argv[]) {
-	u8 ipBlock1 = 192;
-	u8 ipBlock2 = 168;
-    u8 ipBlock3 = 1;
-    u8 ipBlock4 = 255;
-    u8 currentIpBlock = 0;    
+    u8 currentIpBlock = 0;
+    u8 ipBlocks [4] = {192, 168 , 1, 255};
 
     socketInitializeDefault();
     consoleInit(NULL);
@@ -89,6 +86,7 @@ int main(int argc, char* argv[]) {
     printf("Usually this address is 192.168.X.255 where X is the 3. block of your local IP.\n");
 	printf("If UDP broadcasting does not work for you, use the IP of your computer instead.\n");
 	printf("Use the DPAD to enter the IP address bellow and press the A button to connect.\n");
+	printf("ZL/ZR can be used to decrement/increment the IP by 10.\n");
 
 	consoleUpdate(NULL);
 	
@@ -111,23 +109,20 @@ int main(int argc, char* argv[]) {
         hidScanInput();
         u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
 
-		if (currentIpBlock == 0) printf("\x1b[11;1HCurrent IP Adress: [%d].%d.%d.%d\t\t\n", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
-		if (currentIpBlock == 1) printf("\x1b[11;1HCurrent IP Adress: %d.[%d].%d.%d\t\t\n", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
-		if (currentIpBlock == 2) printf("\x1b[11;1HCurrent IP Adress: %d.%d.[%d].%d\t\t\n", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
-		if (currentIpBlock == 3) printf("\x1b[11;1HCurrent IP Adress: %d.%d.%d.[%d]\t\t\n", ipBlock1, ipBlock2, ipBlock3, ipBlock4);
+		if (currentIpBlock == 0) printf("\x1b[11;1HCurrent IP Adress: [%d].%d.%d.%d\t\t\n", ipBlocks[0], ipBlocks[1], ipBlocks[2], ipBlocks[3]);
+		if (currentIpBlock == 1) printf("\x1b[11;1HCurrent IP Adress: %d.[%d].%d.%d\t\t\n", ipBlocks[0], ipBlocks[1], ipBlocks[2], ipBlocks[3]);
+		if (currentIpBlock == 2) printf("\x1b[11;1HCurrent IP Adress: %d.%d.[%d].%d\t\t\n", ipBlocks[0], ipBlocks[1], ipBlocks[2], ipBlocks[3]);
+		if (currentIpBlock == 3) printf("\x1b[11;1HCurrent IP Adress: %d.%d.%d.[%d]\t\t\n", ipBlocks[0], ipBlocks[1], ipBlocks[2], ipBlocks[3]);
 
 		//Handle inputs
-		if (kDown & KEY_DUP && currentIpBlock == 0) ipBlock1++;
-		if (kDown & KEY_DDOWN && currentIpBlock == 0) ipBlock1--;
-		if (kDown & KEY_DUP && currentIpBlock == 1) ipBlock2++;
-		if (kDown & KEY_DDOWN && currentIpBlock == 1) ipBlock2--;
-		if (kDown & KEY_DUP && currentIpBlock == 2) ipBlock3++;
-		if (kDown & KEY_DDOWN && currentIpBlock == 2) ipBlock3--;
-		if (kDown & KEY_DUP && currentIpBlock == 3) ipBlock4++;
-		if (kDown & KEY_DDOWN && currentIpBlock == 3) ipBlock4--;
+		if (kDown & KEY_DUP) ipBlocks[currentIpBlock]++;
+		if (kDown & KEY_DDOWN) ipBlocks[currentIpBlock]--;
 
-		if (kDown & KEY_DRIGHT && currentIpBlock < 4) currentIpBlock++;
-		if (kDown & KEY_DLEFT && currentIpBlock >= 1) currentIpBlock--;
+		if (kDown & KEY_ZR) ipBlocks[currentIpBlock]+=10;
+		if (kDown & KEY_ZL) ipBlocks[currentIpBlock]-=10;
+
+		if (kDown & KEY_DRIGHT && currentIpBlock < 3) currentIpBlock++;
+		if (kDown & KEY_DLEFT && currentIpBlock > 0) currentIpBlock--;
 
         if (kDown & KEY_A) break;
 
@@ -137,7 +132,7 @@ int main(int argc, char* argv[]) {
     }
     
     char computersIp[16];
-    sprintf(computersIp, "%d.%d.%d.%d",ipBlock1, ipBlock2, ipBlock3, ipBlock4);
+    sprintf(computersIp, "%d.%d.%d.%d",ipBlocks[0], ipBlocks[1], ipBlocks[2], ipBlocks[3]);
 
     struct sockaddr_in si_other;
     int s, slen=sizeof(si_other);
